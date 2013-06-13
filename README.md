@@ -5,9 +5,9 @@ Framework basado en el concepto de paquetes de información, manejando una únic
 
 
 Estructura del mensaje base (Aún en desarrollo):
-
+<pre><code>
 {
-  "header": {
+	"header": {
     "idUser": "1",
     "mode": "GET",
     "actionType": "DETAIL",
@@ -52,9 +52,9 @@ Estructura del mensaje base (Aún en desarrollo):
     }
   ]
 }
+</code></pre>
 
+Todo este proyecto está bajo desarrollo si quieres unirte te esperamos, ha sido iniciado por:
 
-Todo este proyecto está bajo desarrollo si quieres unirte te esperamos, este ha sido iniciado por:
-
-Christian Mora
+Christian Mora<br/>
 Santiago Plascencia
