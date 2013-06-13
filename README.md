@@ -7,7 +7,7 @@ Framework basado en el concepto de paquetes de información, manejando una únic
 Estructura del mensaje base (Aún en desarrollo):
 <pre><code>
 {
-	"header": {
+  "header": {
     "idUser": "1",
     "mode": "GET",
     "actionType": "DETAIL",
