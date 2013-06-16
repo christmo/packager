@@ -4,9 +4,12 @@
  */
 package com.xplook.packager;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.xplook.util.XplookConstants;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 /**
@@ -20,13 +23,14 @@ public class XplookPacketData implements Serializable {
     private String database;
     private String collection;
     private Map<String, Object> request;
-    private Map<String, Map<String, Object>> response;
+    private LinkedList<XplookRow> response;
 
     public XplookPacketData() {
     }
-    
+
     /**
-     * Obtiene el id unico del registro 
+     * Obtiene el id unico del registro
+     *
      * @return String
      */
     public String getId() {
@@ -35,6 +39,7 @@ public class XplookPacketData implements Serializable {
 
     /**
      * Setea el id unico del registro
+     *
      * @param id
      */
     public void setId(String id) {
@@ -43,6 +48,7 @@ public class XplookPacketData implements Serializable {
 
     /**
      * Obtiene la Base de datos don se almacena la informacion
+     *
      * @return database -> nombre de la base de datos
      */
     public String getDataBase() {
@@ -51,6 +57,7 @@ public class XplookPacketData implements Serializable {
 
     /**
      * Setea la base de datos donde se debe guardar la información
+     *
      * @param String
      */
     public void setDataBase(String db) {
@@ -59,6 +66,7 @@ public class XplookPacketData implements Serializable {
 
     /**
      * Obtiene la coleccion, archivo o tabla en la que persiste la informacion
+     *
      * @return String
      */
     public String getCollection() {
@@ -66,7 +74,9 @@ public class XplookPacketData implements Serializable {
     }
 
     /**
-     * Setea la coleccion, archivo o tabla en la que se persistira la informacion
+     * Setea la coleccion, archivo o tabla en la que se persistira la
+     * informacion
+     *
      * @param collection
      */
     public void setCollection(String collection) {
@@ -83,8 +93,12 @@ public class XplookPacketData implements Serializable {
      *
      * @return the result
      */
-    public Map<String, Object> getPayLoad(String row) {
-        return getResponse().get(row);
+    public XplookRow getRow(final Object rowId) {
+        return Iterables.find(getResponse(), new Predicate<XplookRow>() {
+            public boolean apply(XplookRow row) {
+                return row.getRowId().equals(rowId);
+            }
+        });
     }
 
     /**
@@ -94,10 +108,10 @@ public class XplookPacketData implements Serializable {
      * @param column
      * @return Object
      */
-    public Object getCell(String row, String column) {
-        if (getResponse().containsKey(row)) {
-            if (getResponse().get(row).containsKey(column)) {
-                return getResponse().get(row).get(column);
+    public Object getCell(Object row, String column) {
+        if (containsRow(row)) {
+            if (getRow(row).containsColumn(column)) {
+                return getRow(row).getColumn(column);
             } else {
                 throw new IllegalArgumentException("Row [" + row + "] not contains colunm [" + column + "]");
             }
@@ -125,6 +139,10 @@ public class XplookPacketData implements Serializable {
         }
     }
 
+    public void setRequest(String key, Object value) {
+        getRequest().put(key, value);
+    }
+
     /**
      * Agrega un parametro clave = valor a las solicitudes
      *
@@ -138,9 +156,9 @@ public class XplookPacketData implements Serializable {
     /**
      * @return the response
      */
-    public Map<String, Map<String, Object>> getResponse() {
+    public LinkedList<XplookRow> getResponse() {
         if (this.response == null) {
-            response = new HashMap<String, Map<String, Object>>();
+            response = new LinkedList<XplookRow>();
         }
         return response;
     }
@@ -148,7 +166,7 @@ public class XplookPacketData implements Serializable {
     /**
      * @param response the response to set
      */
-    public void setResponse(Map<String, Map<String, Object>> response) {
+    public void setResponse(LinkedList<XplookRow> response) {
         this.response = response;
     }
 
@@ -159,13 +177,28 @@ public class XplookPacketData implements Serializable {
      * @param value
      */
     public void addResponse(String key, Object value) {
-        if (getResponse().containsKey(XplookConstants.ROW_DEFAULT)) {
-            getResponse().get(XplookConstants.ROW_DEFAULT).put(key, value);
+        if (containsRow(XplookConstants.ROW_DEFAULT)) {
+            Iterables.getOnlyElement(getResponse());
+            getRow(XplookConstants.ROW_DEFAULT).addColumn(key, value);
         } else {
-            Map<String, Object> fields = new HashMap<String, Object>();
-            fields.put(key, value);
-            getResponse().put(XplookConstants.ROW_DEFAULT, fields);
+            XplookColumn column = new XplookColumn(key, value);
+            XplookRow row = new XplookRow(XplookConstants.ROW_DEFAULT, column);
+            getResponse().add(row);
         }
+    }
+
+    /**
+     * Comprueba si en los datos existe la fila con ese identificador
+     *
+     * @param rowId
+     * @return boolean
+     */
+    public boolean containsRow(final Object rowId) {
+        return Iterables.any(getResponse(), new Predicate<XplookRow>() {
+            public boolean apply(XplookRow row) {
+                return row.getRowId().equals(rowId);
+            }
+        });
     }
 
     /**
@@ -174,21 +207,22 @@ public class XplookPacketData implements Serializable {
      *
      * @param response
      */
-    public void addResponse(Map response) {
+    public void addResponse(XplookColumn... fields) {
         if (response != null) {
-            getResponse().put(XplookConstants.ROW_DEFAULT, response);
+            getRow(XplookConstants.ROW_DEFAULT).setColumns(fields);
         }
     }
 
     /**
      * Agrega una fila a los resultados de la consultas a devolver
      *
-     * @param row
-     * @param response
+     * @param rowId
+     * @param fields
      */
-    public void addResponse(String row, Map response) {
-        if (response != null && row != null) {
-            getResponse().put(row, response);
+    public void addResponse(Object rowId, XplookColumn... fields) {
+        if (fields != null && rowId != null) {
+            XplookRow row = new XplookRow(rowId, fields);
+            getResponse().add(row);
         }
     }
 }

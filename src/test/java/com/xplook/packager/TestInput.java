@@ -16,7 +16,7 @@ public class TestInput {
 
     @Test
     public void TestInput() {
-        String data = "{\"header\":"
+     /*   String data = "{\"header\":"
                 + "{"
                 + "\"idUser\":\"1\","
                 + "\"mode\":\"GET\","
@@ -45,11 +45,11 @@ public class TestInput {
         System.out.println(xp.getPacketData(0).getCollection());
         System.out.println(xp.getPacketData(0).getId());
         System.out.println(xp.getHeader().getMode());
-        for (String key : xp.getPacketData(0).getPayLoad("").keySet()) {
-            System.out.println(key + " = " + xp.getPacketData(0).getPayLoad("").get(key));
+        for (XplookColumn column : xp.getPacketData(0).getRow("").getColumns()) {
+            System.out.println(column.getKey() + " = " + column.getValue());
         }
 
 
-        System.out.println(((ArrayList<Integer>)xp.getPacketData(0).getCell("test2", "algo")).get(0));
+        System.out.println(((ArrayList<Integer>)xp.getPacketData(0).getCell("test2", "algo")).get(0));*/
     }
 }

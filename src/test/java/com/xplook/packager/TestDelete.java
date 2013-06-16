@@ -16,7 +16,7 @@ import org.junit.Test;
  * @author christmo
  */
 public class TestDelete {
-
+/*
     @Test
     public void deleteRow() {
         XplookPacketData data = new XplookPacketData();
@@ -42,5 +42,5 @@ public class TestDelete {
             Logger.getLogger(TestPack.class.getName()).log(Level.SEVERE, null, ex);
         }
         Assert.assertTrue(pack.toString(), true);
-    }
+    }*/
 }
