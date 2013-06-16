@@ -60,6 +60,9 @@ public final class XplookRow implements Serializable {
      * @return the columns
      */
     public LinkedList<XplookColumn> getColumns() {
+        if (columns == null) {
+            columns = new LinkedList<XplookColumn>();
+        }
         return columns;
     }
 
@@ -67,7 +70,9 @@ public final class XplookRow implements Serializable {
      * @param columns the columns to set
      */
     public void setColumns(LinkedList<XplookColumn> columns) {
-        this.columns = columns;
+        if (columns != null) {
+            this.columns = columns;
+        }
     }
 
     /**

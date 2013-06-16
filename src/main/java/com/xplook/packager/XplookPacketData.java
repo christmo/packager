@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 /**
  *
@@ -94,11 +95,15 @@ public class XplookPacketData implements Serializable {
      * @return the result
      */
     public XplookRow getRow(final Object rowId) {
-        return Iterables.find(getResponse(), new Predicate<XplookRow>() {
-            public boolean apply(XplookRow row) {
-                return row.getRowId().equals(rowId);
-            }
-        });
+        try {
+            return Iterables.find(getResponse(), new Predicate<XplookRow>() {
+                public boolean apply(XplookRow row) {
+                    return row.getRowId().equals(rowId);
+                }
+            });
+        } catch (NoSuchElementException ex) {
+            throw new NoSuchElementException("Not present row["+rowId+"] into XplookPack");
+        }
     }
 
     /**

@@ -28,6 +28,14 @@ public abstract class IXplookDB<T> {
     public abstract T insert(T pack);
 
     /**
+     * Actualiza la informacion de un registro a partir de su ID
+     *
+     * @param pack
+     * @return T
+     */
+    public abstract void update(T pack);
+
+    /**
      * Eliminar un registro en base al ID enviado en el mensaje
      *
      * @param pack
@@ -37,6 +45,7 @@ public abstract class IXplookDB<T> {
     /**
      * Elimina los registros que corresponden a la clave y el valor que vengan
      * en el request del paquete
+     *
      * @param pack
      * @return T
      */
@@ -63,7 +72,7 @@ public abstract class IXplookDB<T> {
      * Busca por el _id de mongo del registro que se quiere obtener pobla la
      * metada del XplookPacket ingresado
      *
-     * @param XplookPacket pack
+     * @param pack
      * @return XplookPacket
      */
     public abstract T findById(T pack);

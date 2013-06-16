@@ -64,7 +64,7 @@ public class TestPack {
 
 
         XplookFactoryDAO dao = new XplookFactoryDAO();
-        IXplookDB<XplookPacket> mongo = dao.getDb();
+        IXplookDB<XplookPacket> mongo = dao.getDatabaseInstace();
 //        IXplookDB<XplookPacket> mongo = new XplookMongoImpl();
 
         try {

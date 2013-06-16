@@ -6,6 +6,8 @@ package com.xplook.procesor;
 
 import com.google.gson.Gson;
 import com.xplook.packager.XplookPacket;
+import com.xplook.procesor.dao.IXplookDB;
+import com.xplook.procesor.dao.XplookFactoryDAO;
 
 /**
  *
@@ -16,13 +18,25 @@ public class Synapses {
     public Synapses() {
     }
 
-    public XplookPacket packagerConverter(String packJson) {
+    public XplookPacket convertJSONToPacket(String packJson) {
         Gson gson = new Gson();
         XplookPacket pack = gson.fromJson(packJson, XplookPacket.class);
         return pack;
     }
 
-    boolean savePackage(XplookPacket pack) {
-        return false;
+    public XplookPacket processPacket(XplookPacket pack) {
+        XplookFactoryDAO dao = new XplookFactoryDAO();
+        IXplookDB<XplookPacket> dbInstance = dao.getDatabaseInstace();
+        switch (pack.getHeader().getMode()) {
+            case POST:
+                pack = dbInstance.insert(pack);
+            case DELETE:
+                dbInstance.delete(pack);
+            case UPDATE:
+                dbInstance.update(pack);
+            case GET:
+                pack = dbInstance.findById(pack);
+        }
+        return pack;
     }
 }

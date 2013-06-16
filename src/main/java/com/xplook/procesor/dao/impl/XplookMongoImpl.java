@@ -158,4 +158,9 @@ public class XplookMongoImpl extends IXplookDB<XplookPacket> {
         }
         return pack;
     }
+
+    @Override
+    public void update(XplookPacket pack) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

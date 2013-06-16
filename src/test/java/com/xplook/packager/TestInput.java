@@ -30,7 +30,25 @@ public class TestInput {
                 + "\"id\":\"D-1\","
                 + "\"db\":\"mongo\","
                 + "\"collection\":\"test\","
-                + "\"response\":{\"\":{\"text\":\"christmo\",\"valor\":100},\"test2\":{\"algo\":[1,2]}}}],"
+                + "\"response\": [\n"
+                + "        {\n"
+                + "          \"rowId\": \"0\",\n"
+                + "          \"columns\": [\n"
+                + "            {\n"
+                + "              \"key\": \"0\",\n"
+                + "              \"value\": {\n"
+                + "                \"valor\": 126\n"
+                + "              }\n"
+                + "            },\n"
+                + "            {\n"
+                + "              \"key\": \"1\",\n"
+                + "              \"value\": {\n"
+                + "                \"valor\": 126\n"
+                + "              }\n"
+                + "            }\n"
+                + "          ]\n"
+                + "        }\n"
+                + "      ]}],"
                 + "\"error\":"
                 + "[{"
                 + "\"errorCode\":500,"
@@ -39,17 +57,17 @@ public class TestInput {
                 + "\"parameters\":{\"2\":\"listo\",\"1\":\"verga\"}}]}";
 
         Synapses syn = new Synapses();
-        XplookPacket xp = syn.packagerConverter(data);
+        XplookPacket xp = syn.convertJSONToPacket(data);
 
         System.out.println(xp.getPacketData(0).getDataBase());
         System.out.println(xp.getPacketData(0).getCollection());
         System.out.println(xp.getPacketData(0).getId());
         System.out.println(xp.getHeader().getMode());
-        for (XplookColumn column : xp.getPacketData(0).getRow("").getColumns()) {
+        for (XplookColumn column : xp.getPacketData(0).getRow("0").getColumns()) {
             System.out.println(column.getKey() + " = " + column.getValue());
         }
 
 
-        System.out.println(((ArrayList<Integer>) xp.getPacketData(0).getCell("test2", "algo")).get(0));
+//        System.out.println(((ArrayList<Integer>) xp.getPacketData(0).getCell("test2", "algo")).get(0));
     }
 }

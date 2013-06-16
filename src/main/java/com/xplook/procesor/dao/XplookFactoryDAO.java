@@ -49,9 +49,10 @@ public class XplookFactoryDAO {
     }
 
     /**
+     * Obtiene Instancia de la conexion a la base de datos
      * @return the db
      */
-    public IXplookDB getDb() {
+    public IXplookDB getDatabaseInstace() {
         return db;
     }
 }

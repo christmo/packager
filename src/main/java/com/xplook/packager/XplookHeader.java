@@ -5,6 +5,7 @@
 package com.xplook.packager;
 
 import com.xplook.util.ActionType;
+import com.xplook.util.Device;
 import com.xplook.util.Mode;
 import com.xplook.util.ObjectType;
 import java.io.Serializable;
@@ -22,6 +23,10 @@ public class XplookHeader implements Serializable {
     private ObjectType objectType;
     private String idParent;
     private String language;
+    private Device device;
+
+    public XplookHeader() {
+    }
 
     /**
      * @return the idUser
@@ -87,6 +92,7 @@ public class XplookHeader implements Serializable {
     }
 
     /**
+     * 
      * @param objectType the objectType to set
      */
     public void setObjectType(ObjectType objectType) {
@@ -94,6 +100,7 @@ public class XplookHeader implements Serializable {
     }
 
     /**
+     * Obtiene el codigo del paquete padre del paquete actual
      * @return the idParent
      */
     public String getIdParent() {
@@ -101,6 +108,7 @@ public class XplookHeader implements Serializable {
     }
 
     /**
+     * Asigna el codigo del paquete padre del paquete actual
      * @param idParent the idParent to set
      */
     public void setIdParent(String idParent) {
@@ -108,6 +116,7 @@ public class XplookHeader implements Serializable {
     }
 
     /**
+     * Obtiene el lenguaje en el que se tiene que mostrar el paquete
      * @return the language
      */
     public String getLanguage() {
@@ -115,9 +124,28 @@ public class XplookHeader implements Serializable {
     }
 
     /**
+     * Asigna el lenguaje en el que se tiene que mostar el paquete
      * @param language the language to set
      */
     public void setLanguage(String language) {
         this.language = language;
+    }
+
+    /**
+     * Obtiene el dispositivo en el que se debe mostrar los datos
+     *
+     * @return
+     */
+    public Device getDevice() {
+        return device;
+    }
+
+    /**
+     * Asigna el dispositivo que se visualizaran los datos
+     *
+     * @param device
+     */
+    public void setDevice(Device device) {
+        this.device = device;
     }
 }

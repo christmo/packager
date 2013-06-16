@@ -30,7 +30,7 @@ public class TestDelete {
         System.out.println(pack);
 
         XplookFactoryDAO dao = new XplookFactoryDAO();
-        IXplookDB<XplookPacket> mongo = dao.getDb();
+        IXplookDB<XplookPacket> mongo = dao.getDatabaseInstace();
 
         try {
             mongo.getConection(pack);
