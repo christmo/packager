@@ -32,7 +32,7 @@ public class TestPack {
      */
     @Test
     public void TestPack() {
-      /*  XplookPacketData data = new XplookPacketData();
+        XplookPacketData data = new XplookPacketData();
         data.setCollection("test");
         data.setDataBase("mongo");
 //        data.setId("519dacc2cf43a2226066d1c2");
@@ -76,7 +76,6 @@ public class TestPack {
             //Assert.assertTrue(pack.toString(), true);
         } catch (Exception ex) {
             Logger.getLogger(TestPack.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+        }
     }
-
 }

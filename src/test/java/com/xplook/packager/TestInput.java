@@ -16,7 +16,7 @@ public class TestInput {
 
     @Test
     public void TestInput() {
-     /*   String data = "{\"header\":"
+        String data = "{\"header\":"
                 + "{"
                 + "\"idUser\":\"1\","
                 + "\"mode\":\"GET\","
@@ -50,6 +50,6 @@ public class TestInput {
         }
 
 
-        System.out.println(((ArrayList<Integer>)xp.getPacketData(0).getCell("test2", "algo")).get(0));*/
+        System.out.println(((ArrayList<Integer>) xp.getPacketData(0).getCell("test2", "algo")).get(0));
     }
 }
