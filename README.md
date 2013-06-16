@@ -15,29 +15,31 @@ Estructura del mensaje base (Aún en desarrollo):
   },
   "packetData": [
     {
-      "id": "519dacc2cf43a2226066d1c2",
+      "id": "51bd70de5a65347b795d5ccc",
       "database": "mongo",
       "collection": "test",
-      "request": {},
-      "response": {
-        "1": {
-          "valor": 19
-        },
-        "2": {
-          "valor": 19
-        },
-        "2": {
-          "valor": 19
-        },
-        "4": {
-          "text": "christmo",
-          "valor": 100
-        },
-        "5": {
-          "text": "christmo",
-          "valor": 25
+      "request": {
+        "valor": 126
+      },
+      "response": [
+        {
+          "rowId": "0",
+          "columns": [
+            {
+              "key": "0",
+              "value": {
+                "valor": 126
+              }
+            },
+            {
+              "key": "7",
+              "value": {
+                "valor": 126
+              }
+            }
+          ]
         }
-      }
+      ]
     }
   ],
   "error": [
