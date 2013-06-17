@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-packager
+Xplook
 ========
 
 Framework basado en el concepto de paquetes de información, manejando una única estructura flexible, configurable y personalizable en formato JSON, encargado de transportar la información desde un repositorio de datos (MongoDB, MySQL, PostgresDB, etc) hacia un front end desarrollado en cualquier tecnología, combinado con otras librerías se puede reemplazar el uso de jsp o jsf y manejando una interfaz más limpia y pura en html5.
@@ -61,7 +60,3 @@ Todo este proyecto está bajo desarrollo si quieres unirte te esperamos, ha sido
 
 Christian Mora<br/>
 Santiago Plascencia
-=======
-Xplook
-======
->>>>>>> 0b84ace8d84b10c9bdb69168a322f68d3f146692
