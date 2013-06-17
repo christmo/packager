@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 packager
 ========
 
@@ -60,3 +61,7 @@ Todo este proyecto está bajo desarrollo si quieres unirte te esperamos, ha sido
 
 Christian Mora<br/>
 Santiago Plascencia
+=======
+Xplook
+======
+>>>>>>> 0b84ace8d84b10c9bdb69168a322f68d3f146692
