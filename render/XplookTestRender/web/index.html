@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Xplook Render Beta</title>
+    <link type="text/css" rel="stylesheet" href="controls/styles/default.css" />
+    <link type="text/css" rel="stylesheet" href="controls/styles/w_default_top.css" />
+    <script type="text/javascript" charset="utf-8" src="js/jquery-1.3.2.js"></script>
+    <script type="text/javascript" charset="utf-8" src="js/xplookRender.js"></script>
+    <script type="text/javascript" language="javascript">
+      $(document).ready(load_Controls);
+      
+      function load_Controls(){
+        $('#any_top_id').load('controls/boxes/w_default_top.html');
+      }
+      
+      function common_ajax_evet(){
+        $('#text_area_console').html('');
+        $('#text_area_console').append('<p>===============================code js==================================</p>'); 
+        $('#text_area_console').append('$.ajax("/restEndpoint", { name: "John", time: "2pm" }');
+        $.ajax("/restEndpoint", { name: "John", time: "2pm" } );
+      }
+      
+      function common_get_evet(){
+        $('#text_area_console').html('');
+        $('#text_area_console').append('<p>===============================code js==================================</p>'); 
+
+        $('#text_area_console').append('$.get("/restEndpoint", { name: "John", time: "2pm" }');
+        $.get("/restEndpoint", { name: "John", time: "2pm" } );
+        
+      }
+      
+      function common_post_evet(){
+        $('#text_area_console').html('');
+        $('#text_area_console').append('<p>===============================code js==================================</p>'); 
+
+        $('#text_area_console').append('$.post("/restEndpoint", { name: "John", time: "2pm" }');
+        $.post("/restEndpoint", { name: "John", time: "2pm" } );
+        
+      }
+      
+      
+      function xplook_ajax_evet(){ 
+        $('#text_area_console').html('');
+        $('#text_area_console').append('<p>===============================code js==================================</p>'); 
+
+        $('#text_area_console').append('<p>var insxp =  xplookBuilder.newPacket();</p>');  
+        $('#text_area_console').append('<p>$.ajax(insxp);</p>'); 
+        var insxp =  xplookBuilder.newPacket();
+        $.ajax(insxp);
+      }
+      
+      function xplook_get_evet(){
+        $('#text_area_console').html('');
+        $('#text_area_console').append('<p>===============================code js==================================</p>'); 
+
+        $('#text_area_console').append('<p>var insxp =  xplookBuilder.newPacket();</p>');  
+        $('#text_area_console').append('<p>$.get(insxp);</p>'); 
+        var insxp =  xplookBuilder.newPacket();
+        $.get(insxp);
+        
+      }
+      
+      function xplook_post_evet(){
+        $('#text_area_console').html('');
+        $('#text_area_console').append('<p>===============================code js==================================</p>'); 
+
+        $('#text_area_console').append('<p>var insxp =  xplookBuilder.newPacket();</p>');  
+        $('#text_area_console').append('<p>$.post(insxp);</p>'); 
+        var insxp =  xplookBuilder.newPacket();
+        $.post(insxp);
+      }
+      
+      function xplook_js_process(){
+        $('#text_area_console').html('');
+        $('#text_area_console').append('<p>===============================code js==================================</p>'); 
+
+        $('#text_area_console').append('<p>var insxp =  xplookBuilder.newPacket();</p>');  
+        $('#text_area_console').append('<p>xplook.processXplookPacket(insxp);</p>'); 
+        var insxp =  xplookBuilder.newPacket();
+        var xplookPackt = xplook.processPacket(insxp);
+        $('#text_area_console').append(xplookPackt);
+      }
+      
+      function clearConsole(){
+        $('#text_area_console').html('');
+      }
+    </script>
+  </head>
+
+  <body>
+    <div id="any_top_id" ></div>
+
+    <div>
+      <label><strong>Common ajax</strong></label>
+      <button onclick="common_ajax_evet()">Ajax</button>
+      <button onclick="common_get_evet()">Get</button>
+      <button onclick="common_post_evet()">Post</button>
+    </div>
+    <div>
+      <label><strong>Xplook ajax</strong></label>
+      <button onclick="xplook_ajax_evet()">Ajax</button>
+      <button onclick="xplook_get_evet()">Get</button>
+      <button onclick="xplook_post_evet()">Post</button>
+      <button onclick="xplook_js_process()">javascript</button>
+    </div>
+
+    <div id="text_area_console" disabled="true" style="width: 100%; min-height: 10em"></div>
+    <button onclick="clearConsole()">Clear</button>      
+
+  </body>
+</html>
