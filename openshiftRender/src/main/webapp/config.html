@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Xplook Render Beta</title>
+<script type="text/javascript" charset="utf-8" src="js/xplookRender.js"></script>
+
+</head>
+<body>
+	<div id="xlookModal"></div>
+	<div id="top"></div>
+	<div>
+		<div id="rightMenu"></div>
+		<div style="display: inline-block; width: 80%">
+			<h3>Configuración</h3>
+			<br>
+			<p>Para utilizar xplook render se debe agregar el script en la
+				cabecera del archivo html asi:</p>
+			<br>
+			<pre>&lt;script type="text/javascript" charset="utf-8" src="js/xplookRender.js">&lt;/script></pre>
+			<br>
+			<p>Del lado del servidor debe incluir el archivo</p>
+			<pre>packager.jar</pre>			
+			<br>
+			<p>En el archivo js puede encontrar cambiar la configuracion del
+				render como cambiar de template, habilitar la salida de consola para
+				herramientas de desarrollo en navegadores, agregar un control nuevo
+				durante la carga. etc</p>
+
+			<br>
+			<pre>
+				xplook = {
+					version: " Xplook Render - 1.0",
+					template:undefined,
+					splinner:true,
+					restEndPoiny: 'Services/JSONEndPoint',
+					controls:['top','foother','rightMenu'],
+					outputMesages: true,
+					};				
+			</pre>
+		</div>
+	</div>
+
+	<div id="foother"></div>
+</body>
+</html>
