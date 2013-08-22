@@ -14,7 +14,6 @@ import com.xplook.util.Mode;
 import com.xplook.util.ObjectType;
 import java.io.Serializable;
 import java.net.URISyntaxException;
-import java.util.Iterator;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

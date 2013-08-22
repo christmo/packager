@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Xplook Render Beta</title>
+<script type="text/javascript" charset="utf-8" src="js/xplookRender.js"></script>
+<script type="text/javascript">
+	// $(document).ready(load_Controls);
+
+	function common_ajax_event(type) {
+		$('#text_area_console').html('');
+		var method = '';
+		if('AJAX'==type){
+			method=method+'$.ajax';
+		}
+		if('GET'==type){
+			method=method+'$.get';
+		}
+		if('POST'==type){
+			method=method+'$.post';
+		}
+		method = method +'("/restEndpoint", { name: "John", time: "2pm" }';		
+		$('#text_area_console').append(method);
+		
+		
+		if('AJAX'==type){
+			$.ajax("/restEndpoint", {
+				name : "John",
+				time : "2pm"
+			});
+		}
+		if('GET'==type){
+			$.get("/restEndpoint", {
+				name : "John",
+				time : "2pm"
+			});
+		}
+		if('POST'==type){
+			$.post("/restEndpoint", {
+				name : "John",
+				time : "2pm"
+			});
+		}
+		
+	}	
+
+	function xplook_ajax_event(type) {
+		$('#text_area_console').html('');
+		var method = '';
+		if('AJAX'==type){
+			method='var packet = new xplookPacket(xplook.utils.modes.GET); <br> $.ajax(packet,processResponce);';
+		}
+		if('GET'==type){
+			method='var packet = new xplookPacket(xplook.utils.modes.GET); <br> $.get(packet,processResponce);';
+		}
+		if('POST'==type){
+			method='var packet = new xplookPacket(xplook.utils.modes.GET);<br> $.post(packet,processResponce);';
+		}
+		if('JS'==type){
+			method='var packet = new xplookPacket(xplook.utils.modes.GET); <br> xplook.processPacket(packet);';
+		}
+		$('#text_area_console').append(method);
+		
+		
+		if('AJAX'==type){
+			var packet = new xplookPacket(xplook.utils.modes.GET);
+			$.ajax(packet,processResponce);
+		}
+		if('GET'==type){
+			var packet = new xplookPacket(xplook.utils.modes.GET);
+			$.get(packet,processResponce);
+		}
+		if('POST'==type){
+			var packet = new xplookPacket(xplook.utils.modes.GET);
+			$.post(packet,processResponce);
+		}
+		if('JS'==type){
+			var packet = new xplookPacket(xplook.utils.modes.GET);
+			xplook.processPacket(packet,processResponce);
+		}
+	}
+
+	function processResponce(results) {
+		$('#text_area_console').append(results);
+	}	
+
+	function clearConsole() {
+		$('#text_area_console').html('');
+	}
+</script>
+</head>
+
+<body>
+	<div id="xlookModal"></div>
+	<div id="top"></div>
+	<div>
+		<div id="rightMenu"></div>
+		<div style="display: inline-block; width: 75%; margin-bottom: 4em">
+			<h3>Ajax</h3>
+			<br>
+			<p>Xplook render esta basado en jquery y como tal es capaz de
+				utilizar los metodos ajax de jquery para enviar un paquete al
+				servidor mediante $.get(), $.post() y $.ajax(); tambien puede enviar
+				un paquete directamente desde una función javascript, tenga encuenta
+				el rest endpoint esta parametrizado en dentro el archivo
+				xplookRender.js.</p>
+			<p>XplookRender no interfiere con las peticiones ajax comunes del
+				aplicativo; ya que solo procesa las peticiones que tengan un paquete
+				en el formato xplook; algunos ejemplos de peticiones ajax con
+				xplookRender:</p>
+			<br>
+			<h4>Creando un paquete</h4>
+			<label>Crear un paquete xplook:</label>
+			<pre>
+			var packet = new xplookPacket('GET'); 
+			</pre>
+			Tambien puede usar los utilitarios del render...
+			<pre>
+			var packet = new xplookPacket(xplook.utils.modes.GET);
+			</pre>
+			<h4>Enviando al servidor</h4>
+			<label>Puede utilizar cualquiera de las siguientes maneras:</label>
+			<pre>
+			$.get(packet);
+			$.post(packet);
+			$.ajax(packet);
+			xplook.processPacket(packet);			
+			</pre>
+			Si no se envia una funcion de para procesar la respuesta del servidor,
+			xplookRender tratara de procesarla automaticamente, tenga en cuenta
+			que esto implica que los componentes deben existir en el directorio
+			boxes del aplicativo de lo contrario dara error. ejem
+			<pre>
+			var packet = new xplookPacket(xplook.utils.modes.GET);
+			$.get(packet, processResponce);	
+
+			function processResponce(results) {
+				$('#anyDiv').append(results);
+				//more code here o any implementation
+			}
+			</pre>
+			<br>
+			<h4>Consola de ejemplo</h4>
+			<br>
+			<div>
+				<label><strong>Common ajax</strong></label>
+				<button onclick="common_ajax_event('AJAX');">Ajax</button>
+				<button onclick="common_ajax_event('GET');">Get</button>
+				<button onclick="common_ajax_event('POST');">Post</button>
+			</div>
+			<div>
+				<label><strong>Xplook ajax</strong></label>
+				<button onclick="xplook_ajax_event('AJAX');">Ajax</button>
+				<button onclick="xplook_ajax_event('GET');">Get</button>
+				<button onclick="xplook_ajax_event('POST');">Post</button>
+				<button onclick="xplook_ajax_event('JS');">javascript</button>
+			</div>
+			
+
+			<div id="text_area_console" class="panel" style="color: gray; min-height: 10em">
+
+			</div>
+			<button onclick="clearConsole();">Clear</button>
+
+		</div>
+	</div>
+	<div id="foother"></div>
+
+</body>
+</html>
