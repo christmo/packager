@@ -1,0 +1,93 @@
+* {
+	margin: 0px;
+	padding: 0px;
+}
+
+body {
+	background-color: #4f4f4f;
+	color: #f9f9f9;
+	font-family: 'arial';
+	margin: 0px;
+	padding: 0px;
+}
+
+a, a:link, a:hover, a:visited, a:active {
+	cursor: pointer;
+	text-decoration: none;
+	color: #2B52D6;
+}
+header {
+	background: #22242b;
+	background: -webkit-linear-gradient(rgb(96, 119, 138), black);
+	background: -moz-linear-gradient(rgb(96, 119, 138), black);
+	background: -o-linear-gradient(rgb(96, 119, 138), black);
+	padding: 0em;
+	width: 100%;
+}
+
+footer {
+	background: #22242b;
+	bottom: 0px;
+	position: fixed;
+	padding: 0.5em 0em;
+	text-align: center;
+	width: 100%;
+}
+
+button {
+	background-color: #353535;
+	border: 3px solid rgb(78, 76, 76);
+	border-radius: 0.5em;
+	color: #FFFFFF;
+	font-size: initial;
+	min-width: 5em;
+	padding: 0.5em 1em 0.5em 1em;
+	transition: background 0.4s;
+}
+
+button:hover {
+	background: #727272;
+	cursor: pointer;
+}
+
+button:active {
+	box-shadow: 0px 0px 0px 10px rgba(10, 10, 10, 0.1);
+	-webkit-box-shadow: 0px 0px 0px 10px rgba(10, 10, 10, 0.1);
+	-moz-box-shadow: 0px 0px 0px 10px rgba(10, 10, 10, 0.1);
+}
+
+input {
+	height: 2.4em;
+	margin-bottom: 0.5em;
+	width: 80%;
+}
+
+li{
+	background: #22242b;
+	height: 1.5em;
+	list-style-type: none;
+	padding: 0.2em 1em 0.2em 1em;
+	margin: 0.1em;
+	text-align: center;
+	vertical-align:middle;
+	width: 6em;
+	
+}
+li a:hover{
+	font-size: large;
+}
+
+#rightMenu{
+	display: inline-block;
+	vertical-align: top;
+}
+
+.panel {
+	background-color: #ffffff;
+	border: 1px solid #babac1;
+	border-radius: 1em;
+	display: inline-block;
+	margin: 0.5em;
+	padding: 1em;
+	width: 95%;
+}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Xplook Render Beta</title>
+<script type="text/javascript" charset="utf-8" src="js/xplookRender.js"></script>
+<script type="text/javascript">
+	function xplook_show_slinner() {
+		var xpSplinner = new xplook.render.splinner();
+		xpSplinner.show();
+	}
+</script>
+</head>
+<body>
+	<div id="xlookModal"></div>
+	<div id="top"></div>
+	<div>
+		<div id="rightMenu"></div>
+		<div style="display: inline-block; width: 80%">
+			<h3>Splinner</h3>
+			<br>
+			<p>Puede habilitar el uso de splinner para el procesamiento del
+				ajax o puede crear un objeto spliner para ser administrado por el
+				usuario asi:</p>
+			<pre>
+					var xpSplinner = new xplook.render.splinner();
+				        xpSplinner.show();
+		</pre>
+			<br>
+			<p>Para inabilitar utilice la siguiente linea y considere el
+				ambito de variables:</p>
+			<pre>
+				        xpSplinner.hide();
+		</pre>
+			<br>
+			<div>
+				<label><strong>Xplook splinner</strong></label>
+				<button onclick="xplook_show_slinner();">Show</button>
+			</div>
+		</div>
+	</div>
+
+	<div id="foother"></div>
+</body>
+</html>
