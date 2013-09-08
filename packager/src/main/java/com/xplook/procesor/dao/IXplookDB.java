@@ -4,11 +4,17 @@
  */
 package com.xplook.procesor.dao;
 
-import com.xplook.packager.XplookPacket;
-
 /**
+ * Interfaz para tener la referencia de metodos que se puede aplicar sobre una
+ * base de datos y para el funcionamiento genérico de busqueda de información en
+ * los distintos repositorios de información que pueden ser SQL o NoSQL
  *
  * @author christmo
+ * @version 1.0, 08/Sep/
+ * @013
+ *
+ * @param <T> Genérico, el cual permite utilizar cualquier clase de paquete para
+ * obtener información y responder en el mismo formato.
  */
 public abstract class IXplookDB<T> {
 
@@ -22,23 +28,24 @@ public abstract class IXplookDB<T> {
 
     /**
      * Insertar pack en la base de datos
-     *
-     * @param pack
+     * @param pack Paquete con la información a ser insertada
+     * @return Se retornará valores en la misma estructura de entrada.
      */
     public abstract T insert(T pack);
 
     /**
      * Actualiza la informacion de un registro a partir de su ID
      *
-     * @param pack
-     * @return T
+     *@param pack Paquete con la información a ser actualizada
+     * @return Se retornará valores en la misma estructura de entrada.
      */
-    public abstract void update(T pack);
+    public abstract T update(T pack);
 
     /**
      * Eliminar un registro en base al ID enviado en el mensaje
      *
-     * @param pack
+     * @param pack Paquete con la información a ser eliminada
+     * @return Se retornará valores en la misma estructura de entrada.
      */
     public abstract T delete(T pack);
 
@@ -46,8 +53,8 @@ public abstract class IXplookDB<T> {
      * Elimina los registros que corresponden a la clave y el valor que vengan
      * en el request del paquete
      *
-     * @param pack
-     * @return T
+     * @param pack Paquete con la información a ser eliminada
+     * @return Se retornará valores en la misma estructura de entrada.
      */
     public abstract T deleteByKeyValue(T pack);
 

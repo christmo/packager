@@ -14,6 +14,7 @@ import java.util.LinkedList;
  * Fila retornada por xplook en cada respuesta
  *
  * @author christmo
+ * @version 1.0, 05/Sep/2013
  */
 public final class XplookRow implements Serializable {
 
@@ -43,21 +44,24 @@ public final class XplookRow implements Serializable {
     }
 
     /**
-     * @return the rowId
+     * Obtiene el valor de la fila, identificador de cualquier tipo
+     * @return objeto que representa el id de la fila
      */
     public Object getRowId() {
         return rowId;
     }
 
     /**
-     * @param rowId the rowId to set
+     * Setea el código de la fila
+     * @param rowId Id de la Fila
      */
     public void setRowId(Object rowId) {
         this.rowId = rowId;
     }
 
     /**
-     * @return the columns
+     * Obtiene las columas con los valores de la fila
+     * @return lista de las columnas de la fila
      */
     public LinkedList<XplookColumn> getColumns() {
         if (columns == null) {
@@ -67,7 +71,8 @@ public final class XplookRow implements Serializable {
     }
 
     /**
-     * @param columns the columns to set
+     * Setea la lista de columnas de la fila
+     * @param columns lista de columnas de la fila
      */
     public void setColumns(LinkedList<XplookColumn> columns) {
         if (columns != null) {
@@ -76,10 +81,10 @@ public final class XplookRow implements Serializable {
     }
 
     /**
-     * Obtiene una columna de la fila
+     * Obtiene una columna de la fila, a partir de su nombre clave
      *
-     * @param field
-     * @return XplookColumn
+     * @param field nombre clave de la columna
+     * @return XplookColumn columna de la fila
      */
     public XplookColumn getColumn(final String field) {
         return Iterables.find(getColumns(), new Predicate<XplookColumn>() {
@@ -90,10 +95,10 @@ public final class XplookRow implements Serializable {
     }
 
     /**
-     * Agrega una columna a la fila
+     * Agrega una columna a la fila, sin metadata
      *
-     * @param key
-     * @param value
+     * @param key nombre de la columna
+     * @param value valor de la columna
      */
     public void addColumn(String key, Object value) {
         XplookColumn column = new XplookColumn(key, value);

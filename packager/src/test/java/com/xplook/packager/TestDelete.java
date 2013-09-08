@@ -29,12 +29,12 @@ public class TestDelete {
 
         System.out.println(pack);
 
-        XplookFactoryDAO dao = new XplookFactoryDAO();
-        IXplookDB<XplookPacket> mongo = dao.getDatabaseInstace();
+//        XplookFactoryDAO dao = new XplookFactoryDAO();
+//        IXplookDB<XplookPacket> mongo = dao.getDatabaseInstace();
 
         try {
-            mongo.getConection(pack);
-            pack = mongo.delete(pack);
+//            mongo.getConection(pack);
+//            pack = mongo.delete(pack);
 //            pack = mongo.deleteByKeyValue(pack);
             System.out.println(pack);
         } catch (Exception ex) {

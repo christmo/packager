@@ -11,8 +11,29 @@ import com.xplook.util.ObjectType;
 import java.io.Serializable;
 
 /**
+ * Clase utilizada para contener la información del HEADER del paquete, 
+ * tiene la infomación necesaria para realizar una determinada accion con el
+ * paquete, entre la infomación que se solicita está:
+ * <p>
+ * <ul>
+ * <li>Código del usuario del cual se debe obtener la información 
+ * <li>{@link Mode}Modo en el que está el paquete puede ser GET,POST,UPDATE,DELETE
+ * <li>{@link ObjectType}Tipo de Objeto determina si el paquete tiene una lista 
+ * de resltados o contiene un solo resultado, opciones son LIST o ITEM
+ * <li>Código Padre permite determinar que paquete fue el que originó al paquete
+ * actual
+ * <li>Lenguaje permite determinar el idioma en el que se debe recuperar la 
+ * información esta debe ser utilizada mediante el estándar ISO639
+ * <li>{@link Device} Dispositivo permite determinar a que tipo de dispositivo 
+ * va dirigida la informacion para determinar el tratamiento
+ * <li>{@link ActionType} Tipo de Acción determina si se debe obtener solo
+ * información de la entidad principal, o también de sus relaciones, las opciones
+ * son SHORT y DETAIL
+ * <li>apiKey se utilizará para determinar cuanto utiliza una aplicacion el motor
+ * </ul>
  *
  * @author christmo
+ * @version 1.0, 1/Sep/2013
  */
 public class XplookHeader implements Serializable {
 
@@ -24,7 +45,11 @@ public class XplookHeader implements Serializable {
     private String idParent;
     private String language;
     private Device device;
+    private String engineDB;
 
+    /**
+     * Constructor por default para crear un header limpio
+     */
     public XplookHeader() {
     }
 
@@ -147,5 +172,19 @@ public class XplookHeader implements Serializable {
      */
     public void setDevice(Device device) {
         this.device = device;
+    }
+
+    /**
+     * @return the engineDB
+     */
+    public String getEngineDB() {
+        return engineDB;
+    }
+
+    /**
+     * @param engineDB the engineDB to set
+     */
+    public void setEngineDB(String engineDB) {
+        this.engineDB = engineDB;
     }
 }

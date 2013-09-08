@@ -1,4 +1,4 @@
-/*
+            /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -10,29 +10,35 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
-import com.xplook.packager.XplookError;
 import com.xplook.packager.XplookPacket;
 import com.xplook.packager.XplookPacketData;
 import com.xplook.procesor.dao.IXplookDB;
 import java.net.UnknownHostException;
+import java.util.logging.Level;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Implementación de MongoDB para realizar consultas a la base de datos
  * @author christmo
+ * @version 1.0, 08/Sep/2013
  */
 public class XplookMongoImpl extends IXplookDB<XplookPacket> {
 
     private Logger log = LoggerFactory.getLogger(XplookMongoImpl.class);
-    private DB db;
+//    private DB db;
+    private MongoClient mongo;
+
+    /**
+     * Constructor por defecto
+     */
+    public XplookMongoImpl() {
+    }
 
     public void getConection(XplookPacket pack) throws UnknownHostException {
-        MongoClient mongo = new MongoClient();
-        String database = pack.getPacketData(0).getDataBase();
-        log.info("DataBase: " + database);
-        db = mongo.getDB(database);
+//        String database = pack.getPacketData(0).getDataBase();
+//        db = mongo.getDB(database);
     }
 
     /**
@@ -43,16 +49,19 @@ public class XplookMongoImpl extends IXplookDB<XplookPacket> {
      */
     public XplookPacket insert(XplookPacket pack) {
         for (XplookPacketData data : pack.getPacketData()) {
-            DBCollection collection = db.getCollection(data.getCollection());
-            log.info("Database:" + db.getName());
-            log.info("Collection:" + data.getCollection());
-            DBObject obj = new BasicDBObject();
-            obj.putAll(data.getRequest());
-            if (data.getId() != null && !data.getId().equals("")) {
-                obj.put("_id", new ObjectId(data.getId()));
+            try {
+                DBCollection collection = getCollection(data);
+                DBObject obj = new BasicDBObject();
+                obj.putAll(data.getRequest());
+                if (data.getId() != null && !data.getId().equals("")) {
+                    obj.put("_id", new ObjectId(data.getId()));
+                }
+                collection.save(obj);
+                data.setId(obj.get("_id").toString());
+            } catch (UnknownHostException ex) {
+                pack.addError(1, ex);
+                java.util.logging.Logger.getLogger(XplookMongoImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
-            collection.save(obj);
-            data.setId(obj.get("_id").toString());
         }
         return pack;
     }
@@ -64,17 +73,20 @@ public class XplookMongoImpl extends IXplookDB<XplookPacket> {
      */
     public XplookPacket delete(XplookPacket pack) {
         for (XplookPacketData data : pack.getPacketData()) {
-            DBCollection collection = db.getCollection(data.getCollection());
-            log.info("Database:" + db.getName());
-            log.info("Collection:" + data.getCollection());
-//            obj.putAll(data.getRequest());
-            if (data.getId() != null && !data.getId().equals("")) {
-                DBObject obj = new BasicDBObject();
-                obj.put("_id", new ObjectId(data.getId()));
-                collection.findAndRemove(obj);
-            } else {
-                XplookError error = new XplookError(101, "No se ha enviado el id del registro a eliminar...");
-                pack.addError(error);
+            try {
+                DBCollection collection = getCollection(data);
+                //            obj.putAll(data.getRequest());
+                if (data.getId() != null && !data.getId().equals("")) {
+                    DBObject obj = new BasicDBObject();
+                    obj.put("_id", new ObjectId(data.getId()));
+                    collection.findAndRemove(obj);
+                } else {
+//                    XplookError error = new XplookError(101, "No se ha enviado el id del registro a eliminar...");
+                    pack.addError("NotSendedIdDeleteError");
+                }
+            } catch (UnknownHostException ex) {
+                pack.addError(1, ex);
+                java.util.logging.Logger.getLogger(XplookMongoImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         return pack;
@@ -88,17 +100,20 @@ public class XplookMongoImpl extends IXplookDB<XplookPacket> {
      */
     public XplookPacket findById(XplookPacket pack) {
         for (XplookPacketData data : pack.getPacketData()) {
-            log.info("Collection: " + data.getCollection());
-            DBCollection collection = db.getCollection(data.getCollection());
+            try {
+                DBCollection collection = getCollection(data);
+                DBObject fields = new BasicDBObject();
+                fields.put("_id", false);
 
-            DBObject fields = new BasicDBObject();
-            fields.put("_id", false);
+                DBObject obj = new BasicDBObject();
+                obj.put("_id", new ObjectId(data.getId()));
 
-            DBObject obj = new BasicDBObject();
-            obj.put("_id", new ObjectId(data.getId()));
-
-            obj = collection.findOne(obj, fields);
-            data.addResponse(obj.toMap());
+                obj = collection.findOne(obj, fields);
+                data.addResponse(obj.toMap());
+            } catch (UnknownHostException ex) {
+                pack.addError(1, ex);
+                java.util.logging.Logger.getLogger(XplookMongoImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return pack;
     }
@@ -112,23 +127,26 @@ public class XplookMongoImpl extends IXplookDB<XplookPacket> {
      */
     public XplookPacket findByKeyValue(XplookPacket pack) {
         for (XplookPacketData data : pack.getPacketData()) {
-            log.info("Collection: " + data.getCollection());
-            DBCollection collection = db.getCollection(data.getCollection());
+            try {
+                DBCollection collection = getCollection(data);
+                DBObject fields = new BasicDBObject();
+                fields.put("_id", false);
 
-            DBObject fields = new BasicDBObject();
-            fields.put("_id", false);
+                DBObject objQuery = new BasicDBObject();
+                objQuery.putAll(data.getRequest());
 
-            DBObject objQuery = new BasicDBObject();
-            objQuery.putAll(data.getRequest());
-
-            //For example, to get an array of the 1000-1100th elements of a cursor, use
-            // List obj = collection.find( query ).skip( 1000 ).limit( 100 ).toArray();
-            DBCursor cursor = collection.find(objQuery, fields);
-            log.info("Cursor Size: " + cursor.size());
-//            for (DBObject obj : cursor) {
-            for (int i = 0; i < cursor.size(); i++) {
-                DBObject obj = cursor.toArray().get(i);
-                data.addResponse("" + i, obj.toMap());
+                //For example, to get an array of the 1000-1100th elements of a cursor, use
+                // List obj = collection.find( query ).skip( 1000 ).limit( 100 ).toArray();
+                DBCursor cursor = collection.find(objQuery, fields);
+                log.info("Cursor Size: " + cursor.size());
+                //            for (DBObject obj : cursor) {
+                for (int i = 0; i < cursor.size(); i++) {
+                    DBObject obj = cursor.toArray().get(i);
+                    data.addResponse("" + i, obj.toMap());
+                }
+            } catch (UnknownHostException ex) {
+                pack.addError(1, ex);
+                java.util.logging.Logger.getLogger(XplookMongoImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         return pack;
@@ -142,25 +160,62 @@ public class XplookMongoImpl extends IXplookDB<XplookPacket> {
      */
     public XplookPacket deleteByKeyValue(XplookPacket pack) {
         for (XplookPacketData data : pack.getPacketData()) {
-            log.info("Collection: " + data.getCollection());
-            DBCollection collection = db.getCollection(data.getCollection());
-
-            DBObject objQuery = new BasicDBObject();
-            if (data.getRequest() != null && !data.getRequest().isEmpty()) {
-                objQuery.putAll(data.getRequest());
-                collection.remove(objQuery);
-            } else {
-                XplookError error = new XplookError();
-                error.setErrorCode(100);
-                error.setDescription("No se ha enviado una solicitud para eliminar...");
-                pack.addError(error);
+            try {
+                DBCollection collection = getCollection(data);
+                DBObject objQuery = new BasicDBObject();
+                if (data.getRequest() != null && !data.getRequest().isEmpty()) {
+                    objQuery.putAll(data.getRequest());
+                    collection.remove(objQuery);
+                } else {
+//                    XplookError error = new XplookError();
+//                    error.setErrorCode(100);
+//                    error.setDescription("No se ha enviado una solicitud para eliminar...");
+                    pack.addError("NotSendRequestDeleteError");
+                }
+            } catch (UnknownHostException ex) {
+                pack.addError(1, ex);
+                java.util.logging.Logger.getLogger(XplookMongoImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         return pack;
     }
 
     @Override
-    public void update(XplookPacket pack) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public XplookPacket update(XplookPacket pack) {
+        for (XplookPacketData data : pack.getPacketData()) {
+            try {
+                DBCollection collection = getCollection(data);
+                DBObject objQuery = new BasicDBObject();
+                if (data.getRequest() != null && !data.getRequest().isEmpty()) {
+                    objQuery.putAll(data.getRequest());
+                    collection.update(objQuery, objQuery);
+                } else {
+//                    XplookError error = new XplookError();
+//                    error.setErrorCode(100);
+//                    error.setDescription("No se ha enviado una solicitud para eliminar...");
+                    pack.addError("NotSendRequestDeleteError");
+                }
+            } catch (UnknownHostException ex) {
+                pack.addError(1, ex);
+                java.util.logging.Logger.getLogger(XplookMongoImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return pack;
+    }
+
+    /**
+     * Obtiene la collection de mongo que venga en la sección de data del pack
+     *
+     * @param data
+     * @return DBCollection
+     */
+    private DBCollection getCollection(XplookPacketData data) throws UnknownHostException {
+        mongo = new MongoClient();
+        DB db = mongo.getDB(data.getDataBase());
+        DBCollection collection = db.getCollection(data.getCollection());
+
+        log.info("DataBase: " + data.getDataBase());
+        log.info("Collection: " + data.getCollection());
+        return collection;
     }
 }

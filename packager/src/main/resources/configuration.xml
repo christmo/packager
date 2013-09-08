@@ -5,9 +5,25 @@ and open the template in the editor.
 -->
 
 <config>
-    <database>
-        <implementation>
-            com.xplook.procesor.dao.impl.XplookMongoImpl
-        </implementation>        
+    <!--Base de datos que se usa para tomar las definiciones-->
+    <default_db_tools>mongo</default_db_tools>
+    
+    <!--Datos de conexion para la base NoSQL-->
+    <database name="mongo" type="nosql">
+        <class_impl>com.xplook.procesor.dao.impl.XplookMongoImpl</class_impl>
+        <user></user>
+        <pass></pass>
+        <server>localhost</server>
+        <port>17017</port>
+    </database>
+    
+    <!--Datos de conexion para una base de datos SQL-->
+    <database name="mysql" type="sql">
+        <class_impl>com.xplook.procesor.dao.impl.XplookMySQLImpl</class_impl>
+        <class_driver></class_driver>
+        <user>root</user>
+        <pass></pass>
+        <server>localhost</server>
+        <port>3306</port>
     </database>
 </config>

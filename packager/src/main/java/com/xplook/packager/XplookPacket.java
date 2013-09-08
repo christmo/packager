@@ -10,8 +10,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.xplook.util.ErrorType;
 import com.xplook.util.HiderFieldsPacket;
 import java.io.Serializable;
+import java.util.IllegalFormatConversionException;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.logging.Level;
@@ -19,8 +21,21 @@ import java.util.logging.Logger;
 import org.apache.commons.lang3.SerializationUtils;
 
 /**
+ * Clase principal para el uso de los paquetes
+ * <code>Xplook</code>, esta debe ser instanaciada para crear un paquete de tipo
+ * json que puede ser enviado a través de los metodos, dentro de este se puede
+ * enviar inforamción de cualquier tipo, la cual lo convierte al
+ * <code>XplookPacket</code> en una estructura dinámica.
+ * <p/>
+ * Está compuesto por 3 secciones:
+ * <ul>
+ * <li><code>{@link XplookHeader}</code> Información General del Paquete
+ * <li><code>{@link XplookPacketData}</code> Carga util del paquete
+ * <li><code>{@link XplookError}</code> Errores a mostrar
+ * </ul>
  *
  * @author christmo
+ * @version 1.0, 1/Sep/2013
  */
 public final class XplookPacket implements Serializable, Cloneable {
 
@@ -36,11 +51,15 @@ public final class XplookPacket implements Serializable, Cloneable {
      * @param error
      */
     public XplookPacket(XplookHeader header, XplookPacketData packetData, XplookError error) {
-        this.setHeader(header);
+        if (header != null) {
+            this.setHeader(header);
+        }
         if (packetData != null) {
             this.getPacketData().add(packetData);
         }
-        this.addError(error);
+        if (error != null) {
+            this.addError(error);
+        }
     }
 
     /**
@@ -103,25 +122,117 @@ public final class XplookPacket implements Serializable, Cloneable {
      *
      * @param error
      */
-    public void addError(XplookError error) {
-        if (error != null) {
-            getError().add(error);
+//    public void addError(XplookError error) {
+//        if (error != null) {
+//            getError().add(error);
+//        }
+//    }
+//    public void addError(Object errorCode, Throwable exception) {
+//        getError().add(new XplookError(errorCode, exception));
+//    }
+    
+    /**
+     * Agregar mensaje ERROR al paquete con un código de error y paramaetros
+     *
+     * @param errorCode Código de mensaje de warning
+     * @param parameters Parámetros
+     */
+    public void addError(Object errorCode, Object... parameters) {
+        try {
+            getError().add(new XplookError(ErrorType.ERROR, getHeader(), errorCode, parameters));
+        } catch (IllegalFormatConversionException ex) {
+            getError().add(new XplookError(ErrorType.ERROR, getHeader(), ex));
         }
     }
 
-    public void addError(Object errorCode, String desc) {
-        if (desc != null) {
-            getError().add(new XplookError(errorCode, desc));
+    /**
+     * Agregar mensaje WARN al paquete con un código de error y paramaetros
+     *
+     * @param errorCode Código de mensaje de warning
+     * @param parameters Parámetros
+     */
+    public void addWarn(Object errorCode, Object... parameters) {
+        try {
+            getError().add(new XplookError(ErrorType.WARN, getHeader(), errorCode, parameters));
+        } catch (IllegalFormatConversionException ex) {
+            getError().add(new XplookError(ErrorType.ERROR, getHeader(), ex));
         }
     }
 
+    /**
+     * Agregar un mensaje INFO de información al paquete
+     *
+     * @param errorCode Código de Mensaje de Informacion
+     * @param parameters Parámetros
+     */
+    public void addInfo(Object errorCode, Object... parameters) {
+        try {
+            getError().add(new XplookError(ErrorType.INFO, getHeader(), errorCode, parameters));
+        } catch (IllegalFormatConversionException ex) {
+            getError().add(new XplookError(ErrorType.ERROR, getHeader(), ex));
+        }
+    }
+
+    /**
+     * Agrega un mensaje ERROR al paquete, dependiendo de la excepción
+     * generada
+     *
+     * @param exception Excepción generada por el código, dependiendo de ella se
+     * presentará el mensaje parametrizado para esta
+     * @param parameters Parámetros que se cargaran en el mensaje a visualizar
+     */
+    public void addError(Throwable exception, Object... parameters) {
+//        try {
+        getError().add(new XplookError(ErrorType.ERROR, getHeader(), exception, parameters));
+//        } catch (IllegalFormatConversionException ex) {
+//            getError().add(new XplookError(ErrorType.ERROR, getHeader(), ex));
+//        }
+    }
+
+    /**
+     * Agregar mensaje WARN cuando se de una excepción en el código
+     *
+     * @param exception Excepción generada por el código, dependiendo de ella se
+     * presentará el mensaje parametrizado para esta
+     * @param parameters Parámetros que se cargaran en el mensaje a visualizar
+     */
+    public void addWarn(Throwable exception, Object... parameters) {
+//        try {
+        getError().add(new XplookError(ErrorType.WARN, getHeader(), exception, parameters));
+//        } catch (IllegalFormatConversionException ex) {
+//            getError().add(new XplookError(ErrorType.ERROR, getHeader(), ex));
+//        }
+    }
+
+    /**
+     * Agregar mensaje de INFO cuando se de una excepción en el código
+     *
+     * @param exception Excepción generada por el código, dependiendo de ella se
+     * presentará el mensaje parametrizado para esta
+     * @param parameters Parámetros que se cargaran en el mensaje a visualizar
+     */
+    public void addInfo(Throwable exception, Object... parameters) {
+//        try {
+        getError().add(new XplookError(ErrorType.INFO, getHeader(), exception, parameters));
+//        } catch (IllegalFormatConversionException ex) {
+//            getError().add(new XplookError(ErrorType.ERROR, getHeader(), ex));
+//        }
+    }
+
+//    public void addError(Object errorCode, String desc) {
+//        if (desc != null) {
+//            getError().add(new XplookError(errorCode, desc));
+//        }
+//    }
     /**
      * Sobre escribe los errores del paquete
      *
      * @param error
      */
     public void setAllErrors(LinkedList<XplookError> error) {
-        this.error = error;
+        if (error != null) {
+            this.error = error;
+        }
     }
 
     /**
@@ -134,7 +245,14 @@ public final class XplookPacket implements Serializable, Cloneable {
         return packetData;
     }
 
-    public XplookPacketData getPacketData(int index) {
+    /**
+     * Obtine los datos de la lista de contenido en una determinada posición
+     *
+     * @param index número de fila donde se encuenta la data a recuperar
+     * @return XplookPacketData de la lista de carga utiil del paquete
+     * @throws IndexOutOfBoundsException
+     */
+    public XplookPacketData getPacketData(int index) throws IndexOutOfBoundsException {
         return getPacketData().get(index);
     }
 
@@ -161,34 +279,33 @@ public final class XplookPacket implements Serializable, Cloneable {
         }
     }
 
-    /**
-     * Reemplaza los parametros de la seccion de errores para presentar el
-     * mensaje final de error completamente armado
-     *
-     * @param json
-     * @return JsonElement
-     * @throws CloneNotSupportedException
-     */
-    private JsonElement replaceErrorParameters(Gson json) throws CloneNotSupportedException {
-        JsonElement jsonElement = json.toJsonTree(this.clone());
-        if (jsonElement.getAsJsonObject().getAsJsonArray("error") != null) {
-            try {
-                for (JsonElement errorIndex : jsonElement.getAsJsonObject().getAsJsonArray("error")) {
-                    JsonObject errorSection = errorIndex.getAsJsonObject();
-                    JsonObject param = errorSection.getAsJsonObject("parameters");
-                    for (Map.Entry<String, JsonElement> entry : param.entrySet()) {
-                        String desc = errorSection.get("description").getAsString();
-                        errorSection.addProperty("description", desc.replace("-=" + entry.getKey() + "=-", entry.getValue().getAsString()));
-                    }
-                }
-            } catch (IllegalStateException ex) {
-                //No hacer nada cuando no se tenga parametros
-            }
-        }
-
-        return jsonElement;
-    }
-
+//    /**
+//     * Reemplaza los parametros de la seccion de errores para presentar el
+//     * mensaje final de error completamente armado
+//     *
+//     * @param json
+//     * @return JsonElement
+//     * @throws CloneNotSupportedException
+//     */
+//    private JsonElement replaceErrorParameters(Gson json) throws CloneNotSupportedException {
+//        JsonElement jsonElement = json.toJsonTree(this.clone());
+//        if (jsonElement.getAsJsonObject().getAsJsonArray("error") != null) {
+//            try {
+//                for (JsonElement errorIndex : jsonElement.getAsJsonObject().getAsJsonArray("error")) {
+//                    JsonObject errorSection = errorIndex.getAsJsonObject();
+//                    JsonObject param = errorSection.getAsJsonObject("parameters");
+//                    for (Map.Entry<String, JsonElement> entry : param.entrySet()) {
+//                        String desc = errorSection.get("description").getAsString();
+//                        errorSection.addProperty("description", desc.replace("-=" + entry.getKey() + "=-", entry.getValue().getAsString()));
+//                    }
+//                }
+//            } catch (IllegalStateException ex) {
+//                //No hacer nada cuando no se tenga parametros
+//            }
+//        }
+//
+//        return jsonElement;
+//    }
     @Override
     public Object clone() throws CloneNotSupportedException {
         return SerializationUtils.clone(this);
@@ -207,10 +324,13 @@ public final class XplookPacket implements Serializable, Cloneable {
 //                return false;
 //            }
 //        }).setPrettyPrinting().create();
-        Gson gson = new GsonBuilder().setExclusionStrategies(new HiderFieldsPacket(this)).setPrettyPrinting().create();
+        Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+//        Gson gson = new GsonBuilder().create();
+//        Gson gson = new GsonBuilder().setExclusionStrategies(new HiderFieldsPacket(this)).setPrettyPrinting().create();
         JsonElement jsonElement = null;
         try {
-            jsonElement = replaceErrorParameters(gson);
+            jsonElement = gson.toJsonTree(this.clone());
+//            jsonElement = replaceErrorParameters(gson);
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(XplookPacket.class.getName()).log(Level.SEVERE, null, ex);
         }

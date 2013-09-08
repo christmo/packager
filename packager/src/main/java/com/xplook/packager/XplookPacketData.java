@@ -14,8 +14,11 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
+ * Esta es la clase de carga util aquí se enviará toda la información recuperada
+ * o enviada de un lado a otro a través del paquete
  *
  * @author christmo
+ * @version 1.0, 05/Sep/2013
  */
 public class XplookPacketData implements Serializable {
 
@@ -26,6 +29,9 @@ public class XplookPacketData implements Serializable {
     private Map<String, Object> request;
     private LinkedList<XplookRow> response;
 
+    /**
+     * Contructor por defecto
+     */
     public XplookPacketData() {
     }
 
@@ -59,7 +65,7 @@ public class XplookPacketData implements Serializable {
     /**
      * Setea la base de datos donde se debe guardar la información
      *
-     * @param String
+     * @param db Nombre de la base de datos
      */
     public void setDataBase(String db) {
         this.database = db;
@@ -68,7 +74,7 @@ public class XplookPacketData implements Serializable {
     /**
      * Obtiene la coleccion, archivo o tabla en la que persiste la informacion
      *
-     * @return String
+     * @return Obtiene el nombre de la colección
      */
     public String getCollection() {
         return collection;
@@ -92,7 +98,8 @@ public class XplookPacketData implements Serializable {
     /**
      * Obtiene una fila del resultado obtenido
      *
-     * @return the result
+     * @param rowId
+     * @return Una fila determinada por un ID
      */
     public XplookRow getRow(final Object rowId) {
         try {
@@ -102,16 +109,17 @@ public class XplookPacketData implements Serializable {
                 }
             });
         } catch (NoSuchElementException ex) {
-            throw new NoSuchElementException("Not present row["+rowId+"] into XplookPack");
+            throw new NoSuchElementException("Not present row[" + rowId + "] into XplookPack");
         }
     }
 
     /**
-     * Obtiene un valor de todos los resultados obtenidos
+     * Obtiene un valor de todos los resultados obtenidos, en formato de fila y
+     * columna una sola celda
      *
-     * @param row
-     * @param column
-     * @return Object
+     * @param row Identificador de la fila
+     * @param column Identificador de la columna
+     * @return Una celda de las filas y las columas recuperadas
      */
     public Object getCell(Object row, String column) {
         if (containsRow(row)) {
@@ -126,7 +134,9 @@ public class XplookPacketData implements Serializable {
     }
 
     /**
-     * @return the request
+     * Obtiene todos los parametros de la solicitud
+     *
+     * @return Mapa de todos los parametros de solicitud
      */
     public Map<String, Object> getRequest() {
         if (this.request == null) {
@@ -136,7 +146,9 @@ public class XplookPacketData implements Serializable {
     }
 
     /**
-     * @param request the request to set
+     * Setea todo el mapa de parámetros de la solicitud
+     *
+     * @param request Mapa de parámetros
      */
     public void setRequest(Map<String, Object> request) {
         if (request != null) {
@@ -144,22 +156,31 @@ public class XplookPacketData implements Serializable {
         }
     }
 
+    /**
+     * Setea un parámetro a la solicitud, a través de estos se hará la búsqueda
+     * de datos en el repositorio de información
+     *
+     * @param key Nombre del campo
+     * @param value valor del campo
+     */
     public void setRequest(String key, Object value) {
-        getRequest().put(key, value);
+        this.getRequest().put(key, value);
     }
 
     /**
      * Agrega un parametro clave = valor a las solicitudes
      *
-     * @param key
-     * @param value
+     * @param key nombre del campo
+     * @param value valor del campo
      */
     public void addRequest(String key, Object value) {
         this.getRequest().put(key, value);
     }
 
     /**
-     * @return the response
+     * Obtiene la lista de parámetros de la solicitud
+     *
+     * @return Lista de parámetros
      */
     public LinkedList<XplookRow> getResponse() {
         if (this.response == null) {
@@ -169,7 +190,10 @@ public class XplookPacketData implements Serializable {
     }
 
     /**
-     * @param response the response to set
+     * Setea una lista de filas de respuesta obtenidas de la consulta al
+     * repositorio de información
+     *
+     * @param response Lista de filas consultadas
      */
     public void setResponse(LinkedList<XplookRow> response) {
         this.response = response;
@@ -210,7 +234,7 @@ public class XplookPacketData implements Serializable {
      * Agrega valores a la fila = 0 comodin para cuando solo se consulta un
      * registro
      *
-     * @param response
+     * @param fields campo para agregar a la fila de respuesta
      */
     public void addResponse(XplookColumn... fields) {
         if (response != null) {
@@ -221,8 +245,8 @@ public class XplookPacketData implements Serializable {
     /**
      * Agrega una fila a los resultados de la consultas a devolver
      *
-     * @param rowId
-     * @param fields
+     * @param rowId nombre de la fila en la que se insertara en la respuesta
+     * @param fields Arreglo de campos que se insertaran en la fila
      */
     public void addResponse(Object rowId, XplookColumn... fields) {
         if (fields != null && rowId != null) {

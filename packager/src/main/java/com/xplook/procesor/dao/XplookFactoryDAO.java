@@ -4,9 +4,15 @@
  */
 package com.xplook.procesor.dao;
 
+import com.xplook.packager.XplookPacket;
+import com.xplook.util.XplookConstants;
 import java.net.URL;
-import java.util.logging.Level;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,42 +23,58 @@ import org.slf4j.LoggerFactory;
  */
 public class XplookFactoryDAO {
 
-    private Logger log = LoggerFactory.getLogger(XplookFactoryDAO.class);
-    private IXplookDB db;
+    private static Logger log = LoggerFactory.getLogger(XplookFactoryDAO.class);
+    private static Map<String, DataBaseProperties> dbProperties = new ConcurrentHashMap<String, DataBaseProperties>();
+    private static String defaultDataBaseTools;
 
-    public XplookFactoryDAO() {
-        try {
-            URL url = getClass().getResource("/configuration.xml");
-            log.info("" + url.getPath());
-            XMLConfiguration config = new XMLConfiguration(url);
-            log.info(config.getBasePath());
+    /**
+     * Constructor de conexión a la base de datos
+     * @throws ConfigurationException
+     * @throws ClassNotFoundException
+     * @throws InstantiationException
+     * @throws IllegalAccessException 
+     */
+    public XplookFactoryDAO() throws ConfigurationException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        URL url = getClass().getResource(XplookConstants.PATH_PROPERTIES_DB);
+        log.info("" + url.getPath());
+        XMLConfiguration config = new XMLConfiguration(url);
+        log.info(config.getBasePath());
 
-            Object prop = config.getProperty("database.implementation");
-            log.info("Implementation:" + prop);
-            try {
-                if (prop != null) {
-                    Class classImplementationDB = Class.forName(prop.toString());
-                    db = (IXplookDB) classImplementationDB.newInstance();
-                }else{
-                    throw new IllegalArgumentException("No implementation file exception...");
-                }
-            } catch (ClassNotFoundException ex) {
-                log.error("La clase de la implementacion no ha sido encontrada...",ex);
-            } catch (InstantiationException ex) {
-                java.util.logging.Logger.getLogger(XplookFactoryDAO.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IllegalAccessException ex) {
-                java.util.logging.Logger.getLogger(XplookFactoryDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } catch (ConfigurationException cex) {
-            // something went wrong, e.g. the file was not found
+        defaultDataBaseTools = config.getString(XplookConstants.TAG_DEFAULT_DB);
+        List<HierarchicalConfiguration> servers = config.configurationsAt(XplookConstants.TAG_DATABASES);
+
+        for (HierarchicalConfiguration server : servers) {
+            String service = server.getString(XplookConstants.TAG_NAME_SERVICE);
+            DataBaseProperties dbProp = new DataBaseProperties(service);
+            dbProp.addProperty(XplookConstants.TAG_CLASS_IMPL, server.getString(XplookConstants.TAG_CLASS_IMPL));
+            dbProp.addProperty(XplookConstants.TAG_USER_DB, server.getString(XplookConstants.TAG_USER_DB));
+            dbProp.addProperty(XplookConstants.TAG_PASS_DB, server.getString(XplookConstants.TAG_PASS_DB));
+            dbProp.addProperty(XplookConstants.TAG_SERVER_DB, server.getString(XplookConstants.TAG_SERVER_DB));
+            dbProp.addProperty(XplookConstants.TAG_PORT_DB, server.getString(XplookConstants.TAG_PORT_DB));
+
+            Class classImplementationDB = Class.forName((String) dbProp.getProperty(XplookConstants.TAG_CLASS_IMPL));
+            IXplookDB db = (IXplookDB) classImplementationDB.newInstance();
+            log.info("Add Service Engine DataBase: [" + service + "] -> " + classImplementationDB.getName());
+            dbProp.addProperty(XplookConstants.TAG_CONNECTION_DB, db);
+
+            dbProperties.put(service, dbProp);
         }
     }
 
     /**
      * Obtiene Instancia de la conexion a la base de datos
-     * @return the db
+     * @param packet Paquete de información Header determina la base
+     * @return IXplookDB Interfaz de Conexión a una base de datos
      */
-    public IXplookDB getDatabaseInstace() {
-        return db;
+    public IXplookDB getDatabaseInstace(XplookPacket packet) {
+        DataBaseProperties prop;
+        if (packet.getHeader().getEngineDB() != null) {
+            log.info("Get Instance Header: " + packet.getHeader().getEngineDB());
+            prop = dbProperties.get(packet.getHeader().getEngineDB());
+        } else {
+            log.info("Get Instance Default: " + defaultDataBaseTools);
+            prop = dbProperties.get(defaultDataBaseTools);
+        }
+        return (IXplookDB) prop.getProperty(XplookConstants.TAG_CONNECTION_DB);
     }
 }
