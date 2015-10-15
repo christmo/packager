@@ -45,7 +45,6 @@ public class TestConexionDB {
             System.out.println("" + db);
         } catch (ConfigurationException ex) {
             pack.addError(ex);
-            //Logger.getLogger(TestConexionDB.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
             
 //            pack.addError("TestError","demo","test");

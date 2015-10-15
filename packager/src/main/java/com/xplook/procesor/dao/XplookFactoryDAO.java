@@ -68,7 +68,7 @@ public class XplookFactoryDAO {
      */
     public IXplookDB getDatabaseInstace(XplookPacket packet) {
         DataBaseProperties prop;
-        if (packet.getHeader().getEngineDB() != null) {
+        if (packet != null && packet.getHeader()!= null && packet.getHeader().getEngineDB() != null) {
             log.info("Get Instance Header: " + packet.getHeader().getEngineDB());
             prop = dbProperties.get(packet.getHeader().getEngineDB());
         } else {
