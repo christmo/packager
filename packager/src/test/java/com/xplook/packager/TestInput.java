@@ -52,9 +52,9 @@ public class TestInput {
                 + "\"error\":"
                 + "[{"
                 + "\"errorCode\":500,"
-                + "\"description\":\"se me hizo verga la bici... listo\","
+                + "\"description\":\"Esto representa un mensaje de error -=1=-\","
                 + "\"errorType\":\"ERROR\","
-                + "\"parameters\":{\"2\":\"listo\",\"1\":\"verga\"}}]}";
+                + "\"parameters\":{\"2\":\"parametro2\",\"1\":\"parametro1\"}}]}";
 
         Synapses syn = new Synapses();
         XplookPacket xp = syn.convertJSONToPacket(data);
